@@ -1,0 +1,10 @@
+[server]
+# Disable XSRF protection to allow file uploads on Hugging Face Spaces
+enableXsrfProtection = false
+
+# Increase file upload size limit if needed (default is 200MB)
+maxUploadSize = 200
+
+# Enable CORS for Hugging Face Spaces
+enableCORS = true
+

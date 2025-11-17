@@ -1,0 +1,24 @@
+.env
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+env/
+ENV/
+.venv
+*.log
+.DS_Store
+*.wav
+*.mp3
+*.ogg
+# Ignore PNG files except in screenshots directory
+*.png
+!screenshots/
+*.jpg
+*.jpeg
+temp_audio/
+*.db
+
+

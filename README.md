@@ -13,7 +13,12 @@ Generative-AI-Capstone-project/
 │   ├── database.py          # Database setup
 │   ├── github_ticket.py     # Support ticket integration
 │   └── ...                  # Other project files
-└── [Future Project 2]       # Capstone Project 2 (to be added)
+└── voice_to_image/          # Capstone Project 2: Voice to Image App
+    ├── README.md            # Project documentation
+    ├── app.py               # Streamlit application
+    ├── agent.py             # AI agent for image generation
+    ├── audio_processor.py   # Voice transcription
+    └── ...                  # Other project files
 ```
 
 ## Projects
@@ -31,6 +36,22 @@ An AI-powered Data Insights Application that allows users to query and analyze s
 - Console logging for all operations
 
 See [chat_with_data/README.md](chat_with_data/README.md) for detailed documentation.
+
+### 2. Voice to Image (Capstone Project 2)
+
+**Location**: `voice_to_image/`
+
+Transform your voice into stunning AI-generated images. Simply describe what you want to see, and the app creates beautiful images using DALL-E 3. Features include:
+
+- Voice recording and transcription
+- AI-powered description enhancement
+- Image generation with DALL-E 3
+- Full transparency of intermediate steps
+- Console logging for all operations
+
+🌐 **Live Demo**: [Try it on Hugging Face Spaces](https://huggingface.co/spaces/Shukhratbek/voice-to-image-app)
+
+See [voice_to_image/README.md](voice_to_image/README.md) for detailed documentation.
 
 ## Getting Started
 
