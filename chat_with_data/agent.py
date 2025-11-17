@@ -143,22 +143,22 @@ class DataInsightsAgent:
                 "type": "function",
                 "function": {
                     "name": "create_support_ticket",
-                    "description": "Create a support ticket in GitHub Issues when the user needs human assistance or encounters issues that cannot be resolved automatically.",
+                    "description": "Create a support ticket in GitHub Issues. Use this function when: 1) The user explicitly asks to create a support ticket, 2) The user asks to 'create a ticket', 'file a ticket', 'open a ticket', or similar phrases, 3) The user needs human assistance that cannot be resolved automatically, 4) The user reports a bug or issue. ALWAYS use this function when the user explicitly requests a support ticket.",
                     "parameters": {
                         "type": "object",
                         "properties": {
                             "title": {
                                 "type": "string",
-                                "description": "Title of the support ticket"
+                                "description": "Title of the support ticket. Should be a concise summary of the issue."
                             },
                             "description": {
                                 "type": "string",
-                                "description": "Detailed description of the issue or question"
+                                "description": "Detailed description of the issue or question. Include any relevant context from the conversation."
                             },
                             "labels": {
                                 "type": "array",
                                 "items": {"type": "string"},
-                                "description": "Optional labels for categorizing the ticket (e.g., 'bug', 'question', 'feature-request')"
+                                "description": "Optional labels for categorizing the ticket (e.g., 'bug', 'question', 'feature-request', 'support')"
                             }
                         },
                         "required": ["title", "description"]
@@ -179,6 +179,12 @@ class DataInsightsAgent:
         """
         logger.info(f"User message: {user_message}")
         
+        # Check if user explicitly requested a support ticket
+        user_message_lower = user_message.lower()
+        ticket_keywords = ["create a support ticket", "create support ticket", "file a ticket", 
+                          "open a ticket", "create a ticket", "support ticket", "file ticket"]
+        force_ticket = any(keyword in user_message_lower for keyword in ticket_keywords)
+        
         # Add user message to history
         self.conversation_history.append({
             "role": "user",
@@ -195,18 +201,29 @@ Your role is to help users query and understand sales data from a database.
 IMPORTANT GUIDELINES:
 1. You can only execute SELECT queries - never DELETE, DROP, UPDATE, INSERT, or any other modifying operations
 2. When users ask complex questions, break them down into SQL queries using the query_database function
-3. If a user seems frustrated, needs help beyond your capabilities, or asks explicitly, offer to create a support ticket
+3. If a user explicitly asks to "create a support ticket", "file a ticket", "open a ticket", or similar phrases, you MUST use the create_support_ticket function immediately
 4. Always explain your findings in a clear, business-friendly manner
 5. If query results are large, summarize the key insights rather than listing all rows
-6. Suggest creating a support ticket when you cannot fully resolve an issue or when the user needs human assistance
+6. When a user reports an issue or problem, use the create_support_ticket function to help them
+7. You have access to the create_support_ticket function - use it whenever the user requests a ticket or reports an issue
 
 Available tables:
 - sales: Contains sales transactions with columns: id, date, customer, product, category, quantity, unit_price, total_amount, region, sales_rep
 - customers: Contains customer information with columns: id, name, region, contact_email, total_orders, total_spent
 
-Be helpful, accurate, and safety-conscious."""
+Available functions:
+- query_database: Execute SELECT queries on the database
+- create_support_ticket: Create a GitHub issue for support requests (USE THIS when user asks for a ticket)
+
+Be helpful, accurate, and safety-conscious. Always use the create_support_ticket function when explicitly requested."""
             }
         ] + self.conversation_history
+        
+        # Determine tool choice - force function call if ticket requested
+        tool_choice = "auto"
+        if force_ticket:
+            tool_choice = {"type": "function", "function": {"name": "create_support_ticket"}}
+            logger.info("Forcing support ticket creation based on user request")
         
         # Call OpenAI API with function calling
         try:
@@ -214,11 +231,29 @@ Be helpful, accurate, and safety-conscious."""
                 model=self.model,
                 messages=messages,
                 tools=self.get_available_functions(),
-                tool_choice="auto"
+                tool_choice=tool_choice
             )
             
             message = response.choices[0].message
             logger.info(f"Assistant response: {message.content}")
+            
+            # If forcing ticket but no tool calls, create ticket directly
+            if force_ticket and not message.tool_calls:
+                logger.info("Forced ticket creation but no tool call received, creating ticket directly")
+                # Extract title and description from user message
+                title = user_message.split("for")[-1].strip() if "for" in user_message else "Support Request"
+                if not title or len(title) < 5:
+                    title = "Support Request"
+                description = user_message
+                
+                result = self.create_support_ticket(title=title, description=description, labels=["support"])
+                # Format response
+                if result.get("success"):
+                    url = result.get("url", "N/A")
+                    return f"I've created a support ticket for you!\n\n**Title:** {title}\n**Ticket URL:** {url}\n\nThe support team will review your request and get back to you soon."
+                else:
+                    error = result.get("error", "Unknown error")
+                    return f"I attempted to create a support ticket, but encountered an issue: {error}. Please try again or contact support directly."
             
             # Handle function calls
             if message.tool_calls:
@@ -278,7 +313,11 @@ Be helpful, accurate, and safety-conscious."""
                     {
                         "role": "system",
                         "content": """You are a helpful AI assistant for a Data Insights application. 
-Your role is to help users query and understand sales data from a database."""
+Your role is to help users query and understand sales data from a database.
+
+When you receive function results:
+- For create_support_ticket: If the result shows success=True and includes a URL, inform the user that the support ticket was created successfully and provide the URL. If success=False, explain the issue but still confirm you attempted to create the ticket.
+- For query_database: Present the query results in a clear, business-friendly format."""
                     }
                 ] + self.conversation_history
                 

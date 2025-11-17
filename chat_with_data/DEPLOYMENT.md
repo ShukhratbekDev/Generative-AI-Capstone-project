@@ -18,7 +18,7 @@ This guide explains how to deploy the Data Insights App to Hugging Face Spaces.
 2. Click "Create new Space"
 3. Fill in the details:
    - **Space name**: `data-insights-app` (or your preferred name)
-   - **SDK**: Select "Streamlit"
+   - **SDK**: Select **"Docker"** (for Docker deployment)
    - **Visibility**: Public or Private (your choice)
 4. Click "Create Space"
 
@@ -26,11 +26,13 @@ This guide explains how to deploy the Data Insights App to Hugging Face Spaces.
 
 Upload the following files to your Space repository:
 
+- `Dockerfile` (Docker configuration - **required**)
 - `app.py` (main application file)
 - `agent.py` (AI agent with function calling)
 - `database.py` (database utilities)
 - `github_ticket.py` (support ticket integration)
 - `requirements.txt` (dependencies)
+- `.dockerignore` (optional, but recommended)
 - `README.md` (documentation)
 
 #### 3. Configure Environment Variables
@@ -52,10 +54,12 @@ Alternatively, you can:
 
 #### 5. Deploy
 
-1. Push your files to the Space repository
-2. Hugging Face will automatically build and deploy your app
-3. Wait for the build to complete (usually 2-5 minutes)
+1. Push your files to the Space repository (including the `Dockerfile`)
+2. Hugging Face will automatically detect the Dockerfile and build the Docker image
+3. Wait for the build to complete (usually 5-10 minutes for Docker builds)
 4. Your app will be live at: `https://huggingface.co/spaces/YOUR_USERNAME/YOUR_SPACE_NAME`
+
+**Note**: Docker builds take longer than SDK builds but offer more control and flexibility.
 
 ### Post-Deployment
 
@@ -85,6 +89,13 @@ https://huggingface.co/spaces/yourusername/data-insights-app
 - Check the logs in the Space's "Logs" tab
 - Verify all dependencies are in `requirements.txt`
 - Ensure Python version compatibility
+- For Docker: Verify the Dockerfile is correct and all files are present
+- Check that the Dockerfile exposes port 8501 (Streamlit default)
+
+**Docker-specific issues**:
+- Ensure `Dockerfile` is in the root of your Space repository
+- Verify the Dockerfile uses the correct base image and exposes port 8501
+- Check that all application files are copied correctly in the Dockerfile
 
 ### Alternative Deployment Options
 

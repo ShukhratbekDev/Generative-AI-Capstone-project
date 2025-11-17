@@ -194,6 +194,23 @@ def main():
             with st.chat_message(message["role"]):
                 st.markdown(message["content"])
         
+        # Check if there's an unprocessed user message (from sample query button)
+        # Process it if the last message is from user and hasn't been responded to
+        if (st.session_state.messages and 
+            st.session_state.messages[-1]["role"] == "user" and
+            (len(st.session_state.messages) == 1 or 
+             st.session_state.messages[-2]["role"] != "assistant")):
+            
+            # Get the last user message
+            user_message = st.session_state.messages[-1]["content"]
+            
+            # Get agent response
+            with st.chat_message("assistant"):
+                with st.spinner("Thinking..."):
+                    response = st.session_state.agent.chat(user_message)
+                    st.markdown(response)
+                    st.session_state.messages.append({"role": "assistant", "content": response})
+        
         # Chat input
         if prompt := st.chat_input("Ask me anything about the sales data..."):
             # Add user message
