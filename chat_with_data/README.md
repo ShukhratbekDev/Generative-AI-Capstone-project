@@ -4,6 +4,14 @@
 
 This application provides an intelligent interface for querying and analyzing sales data using an AI agent with function calling capabilities. The agent can safely query the database and create support tickets when needed.
 
+## 🚀 Live Demo
+
+**Try the application live on Hugging Face Spaces:**
+
+👉 **[https://huggingface.co/spaces/Shukhratbek/data-insights-app](https://huggingface.co/spaces/Shukhratbek/data-insights-app)**
+
+The live demo is fully functional and includes all features: database querying, business insights dashboard, and support ticket creation.
+
 ## Features
 
 - 🤖 **AI Agent with Function Calling**: Uses OpenAI's function calling API to interact with the database

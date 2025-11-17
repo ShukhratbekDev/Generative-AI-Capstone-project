@@ -2,14 +2,17 @@
 
 ## Hosted Solution Link
 
-**Note**: This document should be updated with the actual deployment link once the application is deployed to Hugging Face Spaces or another hosting platform.
-
 ### Hugging Face Spaces
 
-Once deployed, the application will be available at:
-```
-https://huggingface.co/spaces/Shukhratbek/data-insights-app
-```
+✅ **Application is now live and deployed!**
+
+The application is available at:
+**https://huggingface.co/spaces/Shukhratbek/data-insights-app**
+
+You can access the live demo and test all features including:
+- Database querying with natural language
+- Business insights dashboard
+- Support ticket creation
 
 ### Deployment Steps Completed
 
@@ -54,6 +57,7 @@ Once deployed, replace the placeholder URL above with the actual Hugging Face Sp
 ---
 
 **Project**: Data Insights App - Capstone Project 1
-**Status**: Ready for deployment
-**Last Updated**: [Date when deployed]
+**Status**: ✅ Deployed and Live
+**Live URL**: https://huggingface.co/spaces/Shukhratbek/data-insights-app
+**Last Updated**: November 2024
 
