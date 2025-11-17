@@ -57,7 +57,7 @@ Alternatively, you can:
 1. Push your files to the Space repository (including the `Dockerfile`)
 2. Hugging Face will automatically detect the Dockerfile and build the Docker image
 3. Wait for the build to complete (usually 5-10 minutes for Docker builds)
-4. Your app will be live at: `https://huggingface.co/spaces/YOUR_USERNAME/YOUR_SPACE_NAME`
+4. Your app will be live at: `https://huggingface.co/spaces/Shukhratbek/data-insights-app`
 
 **Note**: Docker builds take longer than SDK builds but offer more control and flexibility.
 

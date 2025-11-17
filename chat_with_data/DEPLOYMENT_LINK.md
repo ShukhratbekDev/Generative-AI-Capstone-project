@@ -8,7 +8,7 @@
 
 Once deployed, the application will be available at:
 ```
-https://huggingface.co/spaces/YOUR_USERNAME/data-insights-app
+https://huggingface.co/spaces/Shukhratbek/data-insights-app
 ```
 
 ### Deployment Steps Completed
